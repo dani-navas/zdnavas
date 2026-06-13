@@ -332,25 +332,25 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 
 
 **Evento con Interface
-    DATA(lo_banco_ue) = NEW zcl_banco_ue_dnavas( ).
-    DATA(lo_banco_cliente) = NEW zcl_banco_cliente_dnavas( ).
-
-    SET HANDLER lo_banco_cliente->on_notificacion FOR lo_banco_ue.
+*    DATA(lo_banco_ue) = NEW zcl_banco_ue_dnavas( ).
+*    DATA(lo_banco_cliente) = NEW zcl_banco_cliente_dnavas( ).
 *
-    DO 5 TIMES.
-      WAIT UP TO 1 SECONDS.
-      lo_banco_cliente->transferencias( r_iban = 1   ).
-      lo_banco_ue->notificar( ) . "LEVANTO EL EVENTO
-      out->write( lo_banco_cliente->notificacion ) .
-
-      if sy-index = 3.
-            set HANDLER lo_banco_cliente->on_notificacion for lo_banco_ue ACTIVATION abap_false.
-            lo_banco_cliente->notificacion  = 'Evento desactivado' .
-      endif.
-    ENDDO.
-
-
-*Evento Estatico
+*    SET HANDLER lo_banco_cliente->on_notificacion FOR lo_banco_ue.
+**
+*    DO 5 TIMES.
+*      WAIT UP TO 1 SECONDS.
+*      lo_banco_cliente->transferencias( r_iban = 1   ).
+*      lo_banco_ue->notificar( ) . "LEVANTO EL EVENTO
+*      out->write( lo_banco_cliente->notificacion ) .
+*
+*      if sy-index = 3.
+*            set HANDLER lo_banco_cliente->on_notificacion for lo_banco_ue ACTIVATION abap_false.
+*            lo_banco_cliente->notificacion  = 'Evento desactivado' .
+*      endif.
+*    ENDDO.
+*
+*
+**Evento Estatico
 *    SET HANDLER zcl_smtp_dnavas=>on_new_email.
 *
 *    DO 5 TIMES.
@@ -360,9 +360,48 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *    out->write( zcl_smtp_dnavas=>mt_mail ).
 
 
+*Excepciones
+*
+*    DATA(lo_edit_contract) = NEW zcl_edit_contract_dnavas( ).
+*    DATA lx_autorizacion TYPE REF TO zcx_excepcion_dnavas.
+*
+*
+*    DATA l_resultado TYPE i.
+*    DATA l_num1 TYPE i VALUE 10.
+*    DATA l_num2 TYPE i.
+*
+*    TRY.
+**        lo_edit_contract->check_edit( i_usuario = 'CB9980000153' ).
+*
+*        l_resultado = l_Num1 / l_Num2.
+*
+*
+**      CATCH zcx_excepcion_dnavas INTO lx_autorizacion.
+**        out->write( lx_autorizacion->get_text( ) ).
+*
+*
+*      CATCH   cx_sy_zerodivide INTO DATA(l_zerodivide).
+*        out->write( l_ZERODIVIDE->get_text( ) ).
+*        l_num2 = 5.
+*        RETRY.
+**Excepción con RETRY hace que se vuelva a ejecutar el TRY
+*
+*
+*    ENDTRY.
+*
+*    out->write( |FINAL: { l_resultado } | ).
 
 
+*Unit Test
 
+    DATA(lo_factorial) = NEW zcl_factorial_dnavas( ).
+
+    DATA l_factorial TYPE i.
+
+    lo_factorial->get_factorial( EXPORTING   i_factorial = 4
+                                 IMPORTING   e_factorial = l_factorial ).
+
+    out->write(  l_factorial ).
 
 
 
